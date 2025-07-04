@@ -1,0 +1,146 @@
+groups:
+  - name: microservices_alerts
+    rules:
+      # Service availability alerts
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} on {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.job }}"
+          description: "Error rate is {{ $value }} errors per second on {{ $labels.job }}."
+
+      # Response time alerts
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time on {{ $labels.job }}"
+          description: "95th percentile response time is {{ $value }}s on {{ $labels.job }}."
+
+      # Database alerts
+      - alert: DatabaseDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "PostgreSQL database has been down for more than 1 minute."
+
+      - alert: HighDatabaseConnections
+        expr: pg_stat_database_numbackends / pg_settings_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database connection usage"
+          description: "Database connection usage is {{ $value }}% on {{ $labels.instance }}."
+
+      # Redis alerts
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "Redis instance has been down for more than 1 minute."
+
+      - alert: HighRedisMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value }}% on {{ $labels.instance }}."
+
+      # System resource alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}."
+
+      - alert: HighDiskUsage
+        expr: (node_filesystem_size_bytes - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High disk usage"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }} for {{ $labels.mountpoint }}."
+
+      # Application-specific alerts
+      - alert: HighContactFormSubmissions
+        expr: rate(contact_form_submissions_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: info
+        annotations:
+          summary: "High contact form submission rate"
+          description: "Contact form submissions rate is {{ $value }} per second."
+
+      - alert: AuthenticationFailures
+        expr: rate(auth_failures_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failure rate is {{ $value }} per second."
+
+      - alert: LowSuccessfulAuthRate
+        expr: rate(auth_success_total[5m]) / rate(auth_attempts_total[5m]) < 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low authentication success rate"
+          description: "Authentication success rate is {{ $value }} on {{ $labels.instance }}."
+
+  - name: business_metrics_alerts
+    rules:
+      # Business KPI alerts
+      - alert: LowConversionRate
+        expr: rate(contact_form_submissions_total[1h]) / rate(page_views_total[1h]) < 0.02
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low conversion rate"
+          description: "Conversion rate from page views to contact form submissions is {{ $value }}."
+
+      - alert: HighBounceRate
+        expr: rate(single_page_sessions_total[1h]) / rate(sessions_total[1h]) > 0.7
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "High bounce rate"
+          description: "Bounce rate is {{ $value }} which may indicate user experience issues." 

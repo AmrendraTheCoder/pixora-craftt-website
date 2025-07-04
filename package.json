@@ -1,0 +1,111 @@
+{
+  "name": "pixora-craftt",
+  "version": "1.0.0",
+  "description": "Scalable digital agency platform with microservices architecture",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend/*",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "concurrently \"npm run dev:api-gateway\" \"npm run dev:auth\" \"npm run dev:cms\" \"npm run dev:admin\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:api-gateway": "cd backend/api-gateway && npm run dev",
+    "dev:auth": "cd backend/auth-service && npm run dev",
+    "dev:cms": "cd backend/cms-service && npm run dev",
+    "dev:admin": "cd backend/admin-service && npm run dev",
+    
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "npm run build:api-gateway && npm run build:auth && npm run build:cms && npm run build:admin",
+    "build:frontend": "cd frontend && npm run build",
+    "build:api-gateway": "cd backend/api-gateway && npm run build",
+    "build:auth": "cd backend/auth-service && npm run build",
+    "build:cms": "cd backend/cms-service && npm run build",
+    "build:admin": "cd backend/admin-service && npm run build",
+    
+    "start": "npm run start:backend && npm run start:frontend",
+    "start:backend": "concurrently \"npm run start:api-gateway\" \"npm run start:auth\" \"npm run start:cms\" \"npm run start:admin\"",
+    "start:frontend": "cd frontend && npm run preview",
+    "start:api-gateway": "cd backend/api-gateway && npm start",
+    "start:auth": "cd backend/auth-service && npm start",
+    "start:cms": "cd backend/cms-service && npm start",
+    "start:admin": "cd backend/admin-service && npm start",
+    
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "npm run test:api-gateway && npm run test:auth && npm run test:cms && npm run test:admin",
+    "test:frontend": "cd frontend && npm test",
+    "test:api-gateway": "cd backend/api-gateway && npm test",
+    "test:auth": "cd backend/auth-service && npm test",
+    "test:cms": "cd backend/cms-service && npm test",
+    "test:admin": "cd backend/admin-service && npm test",
+    
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "eslint backend/*/src --ext .ts,.js",
+    "lint:frontend": "cd frontend && npm run lint",
+    
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    
+    "db:migrate": "cd backend/database && npm run migrate",
+    "db:seed": "cd backend/database && npm run seed",
+    "db:reset": "cd backend/database && npm run reset",
+    
+    "setup": "npm install && npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "cd backend && npm install && npm run setup:services",
+    "setup:frontend": "cd frontend && npm install",
+    
+    "clean": "npm run clean:backend && npm run clean:frontend",
+    "clean:backend": "rm -rf backend/*/dist backend/*/node_modules",
+    "clean:frontend": "cd frontend && rm -rf dist node_modules",
+    
+    "health": "curl -f http://localhost:4000/health || exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.2",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/pixora-craftt"
+  },
+  "keywords": [
+    "microservices",
+    "nodejs",
+    "react",
+    "typescript",
+    "digital-agency",
+    "cms",
+    "scalable"
+  ],
+  "author": "Pixora Craftt Team",
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
