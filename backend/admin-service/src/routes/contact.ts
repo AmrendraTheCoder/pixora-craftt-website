@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, query, validationResult } from 'express-validator';
-import { createLogger } from '@pixora-craftt/shared/utils/logger.js';
-import { ApiResponse } from '@pixora-craftt/shared/types/common.js';
+import { createLogger } from '../utils/logger.js';
+import { ApiResponse } from '../types/common.js';
 import { Contact } from '../config/database.js';
 import rateLimit from 'express-rate-limit';
 

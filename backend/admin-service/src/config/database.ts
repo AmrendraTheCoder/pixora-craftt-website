@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { createLogger } from '@pixora-craftt/shared/utils/logger.js';
+import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('admin-db');
 

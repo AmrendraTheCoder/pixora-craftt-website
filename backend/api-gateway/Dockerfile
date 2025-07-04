@@ -1,51 +1,36 @@
 # API Gateway Dockerfile
-FROM node:18-alpine
+FROM node:20-alpine AS base
 
-LABEL maintainer="Pixora Craftt Team"
-LABEL description="API Gateway service for Pixora Craftt microservices"
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init curl
 
 # Create app directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apk add --no-cache \
-    curl \
-    bash \
-    && rm -rf /var/cache/apk/*
-
 # Copy package files
 COPY package*.json ./
-COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies including dev dependencies
+RUN npm install && npm cache clean --force
 
-# Copy shared dependencies
-COPY ../shared /app/shared
-RUN cd /app/shared && npm install && npm run build
+# Development stage
+FROM base AS development
+COPY . .
+EXPOSE 4000
+CMD ["npm", "run", "dev"]
 
-# Copy source code
-COPY src/ ./src/
-
-# Build the application
-RUN npm run build
+# Production stage - for now just use development
+FROM base AS production
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S apigateway -u 1001
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S apigateway -u 1001
 
-# Create logs directory
-RUN mkdir -p /app/logs && chown -R apigateway:nodejs /app/logs
+# Copy application
+COPY --chown=apigateway:nodejs . .
 
 # Switch to non-root user
 USER apigateway
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${API_GATEWAY_PORT:-4000}/health || exit 1
-
-# Expose port
-EXPOSE ${API_GATEWAY_PORT:-4000}
-
-# Start the application
-CMD ["npm", "start"] 
+EXPOSE 4000
+CMD ["node", "src/index.js"] 
