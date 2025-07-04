@@ -92,10 +92,14 @@ export const authService = {
         body: JSON.stringify({ email, password }),
       });
       
-      if (response.token) {
-        localStorage.setItem('auth-token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        return { success: true, token: response.token, user: response.user };
+      // Handle both direct token and nested data.accessToken responses
+      const token = response.token || response.data?.accessToken;
+      const user = response.user || response.data?.user;
+      
+      if (token && response.success !== false) {
+        localStorage.setItem('auth-token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        return { success: true, token, user };
       }
       
       return { success: false };
@@ -331,6 +335,31 @@ export const adminService = {
         newContacts: mockData.contacts.filter(c => c.status === 'new').length,
         completedContacts: mockData.contacts.filter(c => c.status === 'completed').length,
         monthlyStats: [],
+      };
+    }
+  },
+
+  async getCmsAnalytics(): Promise<any> {
+    try {
+      const response = await apiRequest('/api/admin/cms-analytics');
+      return response;
+    } catch (error) {
+      console.warn('CMS Analytics API not available, using mock data');
+      return {
+        contentOverview: {
+          totalViews: Math.floor(Math.random() * 5000) + 15000,
+          totalContent: 24,
+          activeContent: 20,
+          contentHealth: 83,
+          monthlyGrowth: 18.5,
+          engagementRate: 76.3
+        },
+        seoMetrics: {
+          overallScore: 92,
+          technicalSeo: 95,
+          contentSeo: 89,
+          userExperience: 94
+        }
       };
     }
   },
