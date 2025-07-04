@@ -1,25 +1,30 @@
-# Pixora Craftt - Microservices Architecture
+# Pixora Craftt - Microservices Platform
 
-A scalable, production-ready digital agency platform built with microservices architecture, featuring separated backend services and a modern React frontend.
+A modern, scalable digital agency platform built with microservices architecture, featuring Node.js backend services and React frontend.
 
-## 🏗️ Architecture Overview
-
-This project follows a microservices architecture with the following components:
+## 🏗️ Project Structure
 
 ```
 pixora-craftt/
-├── backend/                 # Backend Microservices
-│   ├── api-gateway/         # API Gateway & Load Balancer
-│   ├── auth-service/        # Authentication Service
-│   ├── cms-service/         # Content Management Service
-│   ├── admin-service/       # Admin Dashboard Service
-│   ├── shared/              # Shared utilities and types
-│   └── database/            # Database schemas and migrations
-├── frontend/                # React Frontend Application
-├── infrastructure/          # Docker, Nginx, CI/CD configs
-├── monitoring/              # Logging, metrics, health checks
-└── docs/                    # Documentation
+├── frontend/               # React Frontend Application
+├── backend/               # Backend Microservices
+│   ├── api-gateway/       # API Gateway (Port 4000)
+│   ├── auth-service/      # Authentication Service (Port 4001)
+│   ├── cms-service/       # Content Management (Port 4002)
+│   ├── admin-service/     # Admin Dashboard (Port 4003)
+│   └── shared/           # Shared utilities and types
+├── infrastructure/        # Docker, Nginx, Monitoring
+├── docs/                 # Documentation & Examples
+│   ├── api/              # API Documentation
+│   ├── deployment/       # Setup & Deployment Guides
+│   └── examples/         # Configuration Templates
+├── docker-compose.yml    # Docker orchestration
+└── package.json         # Monorepo workspace config
 ```
+
+## 🏗️ Architecture Overview
+
+This project follows a microservices architecture with clear separation of concerns:
 
 ## 🚀 Technology Stack
 
@@ -50,48 +55,32 @@ pixora-craftt/
 - **Winston** for logging
 - **Prometheus** + **Grafana** for monitoring
 
-## 🛠️ Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Node.js 18+
 - Docker & Docker Compose
-- PostgreSQL 14+
-- Redis 6+
 
-### Development Setup
+### Get Started in 3 Steps
 
-1. **Clone and setup environment**:
+1. **Setup**
+   ```bash
+   git clone <repository>
+   cd pixora-craftt
+   npm run setup
+   ```
 
-```bash
-git clone <repository>
-cd pixora-craftt
-cp .env.example .env
-# Fill in your environment variables
-```
+2. **Start**
+   ```bash
+   npm start
+   ```
 
-2. **Start all services with Docker**:
+3. **Access**
+   - Frontend: http://localhost:3000
+   - API: http://localhost:4000
+   - Docs: [docs/QUICK_START.md](docs/QUICK_START.md)
 
-```bash
-docker-compose up -d
-```
-
-3. **Or run services individually**:
-
-```bash
-# Backend services
-cd backend && npm run dev:all
-
-# Frontend
-cd frontend && npm run dev
-```
-
-4. **Access the application**:
-
-- Frontend: http://localhost:3000
-- API Gateway: http://localhost:4000
-- Admin Dashboard: http://localhost:4000/admin
-- CMS API: http://localhost:4000/cms
+> 📖 **Detailed Guide**: See [docs/QUICK_START.md](docs/QUICK_START.md) for complete setup instructions.
 
 ## 📋 Services Overview
 

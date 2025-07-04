@@ -1,67 +1,22 @@
 {
-  "name": "pixora-craftt",
+  "name": "@pixora-craftt/monorepo",
   "version": "1.0.0",
-  "description": "Scalable digital agency platform with microservices architecture",
+  "description": "Pixora Craftt - Scalable microservices platform for digital agency",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "backend/*",
-    "frontend"
-  ],
+
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "concurrently \"npm run dev:api-gateway\" \"npm run dev:auth\" \"npm run dev:cms\" \"npm run dev:admin\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:api-gateway": "cd backend/api-gateway && npm run dev",
-    "dev:auth": "cd backend/auth-service && npm run dev",
-    "dev:cms": "cd backend/cms-service && npm run dev",
-    "dev:admin": "cd backend/admin-service && npm run dev",
-    
-    "build": "npm run build:backend && npm run build:frontend",
-    "build:backend": "npm run build:api-gateway && npm run build:auth && npm run build:cms && npm run build:admin",
-    "build:frontend": "cd frontend && npm run build",
-    "build:api-gateway": "cd backend/api-gateway && npm run build",
-    "build:auth": "cd backend/auth-service && npm run build",
-    "build:cms": "cd backend/cms-service && npm run build",
-    "build:admin": "cd backend/admin-service && npm run build",
-    
-    "start": "npm run start:backend && npm run start:frontend",
-    "start:backend": "concurrently \"npm run start:api-gateway\" \"npm run start:auth\" \"npm run start:cms\" \"npm run start:admin\"",
-    "start:frontend": "cd frontend && npm run preview",
-    "start:api-gateway": "cd backend/api-gateway && npm start",
-    "start:auth": "cd backend/auth-service && npm start",
-    "start:cms": "cd backend/cms-service && npm start",
-    "start:admin": "cd backend/admin-service && npm start",
-    
-    "test": "npm run test:backend && npm run test:frontend",
-    "test:backend": "npm run test:api-gateway && npm run test:auth && npm run test:cms && npm run test:admin",
-    "test:frontend": "cd frontend && npm test",
-    "test:api-gateway": "cd backend/api-gateway && npm test",
-    "test:auth": "cd backend/auth-service && npm test",
-    "test:cms": "cd backend/cms-service && npm test",
-    "test:admin": "cd backend/admin-service && npm test",
-    
-    "lint": "npm run lint:backend && npm run lint:frontend",
-    "lint:backend": "eslint backend/*/src --ext .ts,.js",
-    "lint:frontend": "cd frontend && npm run lint",
-    
-    "docker:build": "docker-compose build",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    
-    "db:migrate": "cd backend/database && npm run migrate",
-    "db:seed": "cd backend/database && npm run seed",
-    "db:reset": "cd backend/database && npm run reset",
-    
-    "setup": "npm install && npm run setup:backend && npm run setup:frontend",
-    "setup:backend": "cd backend && npm install && npm run setup:services",
-    "setup:frontend": "cd frontend && npm install",
-    
-    "clean": "npm run clean:backend && npm run clean:frontend",
-    "clean:backend": "rm -rf backend/*/dist backend/*/node_modules",
-    "clean:frontend": "cd frontend && rm -rf dist node_modules",
-    
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "build:all": "cd frontend && npm run build",
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "restart": "docker-compose restart",
+    "logs": "docker-compose logs -f",
+    "clean": "docker-compose down -v --rmi all",
+    "setup": "cd frontend && npm install && cd .. && cp docs/examples/env.template .env && cp docs/examples/env.frontend.template frontend/.env.local && echo 'Setup complete! Run npm start to begin.'",
+    "test": "cd frontend && npm test",
+    "lint": "cd frontend && npm run lint",
     "health": "curl -f http://localhost:4000/health || exit 1"
   },
   "devDependencies": {
