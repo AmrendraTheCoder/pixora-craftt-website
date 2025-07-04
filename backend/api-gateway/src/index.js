@@ -63,7 +63,7 @@ const adminProxy = createProxyMiddleware({
   target: ADMIN_SERVICE_URL,
   changeOrigin: true,
   pathRewrite: {
-    '^/api/admin': '/api',
+    '^/api/admin': '',
   },
   onError: (err, req, res) => {
     console.log('Admin service proxy error:', err.message);
